@@ -2,8 +2,11 @@
 
 import math
 import sys
+import random
 
 from common import print_solution, read_input
+
+random.seed(1)
 
 
 def distance(city1, city2):
@@ -11,9 +14,9 @@ def distance(city1, city2):
 
 
 def solve(cities):
-    # Build a trivial solution.
-    # Visit the cities in the order they appear in the input.
-    return list(range(len(cities)))
+    solution = list(range(len(cities)))
+    random.shuffle(solution)
+    return solution
 
 
 if __name__ == '__main__':
