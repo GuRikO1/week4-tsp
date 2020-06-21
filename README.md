@@ -1,4 +1,105 @@
-Build@Mercari 2020 Week4 - Travelling Salesman PRoblem Challenges.
+## Build@Mercari 2020 Week4 - Travelling Salesman PRoblem Challenges.
+
+----
+## Descripition
+My TSP solver algorithm can be divided into three main parts.
+
+1. How to structure edge costs
+2. How to construct a first solution
+3. Improvement
+
+Each part is described in the followings.
+
+1. How to structure edge costs
+    - ***normal***: normal Euclidean diatance
+
+        The distance between the two nodes is the Euclidean distance derived from the coordinates.
+
+    - ***minus-mean***: normal - the distance average of both end nodes (reference[1])
+
+        It takes into account the distribution of the cost of edges leaving a node. If the distance average of both end nodes is large, we need to choose the edges with priority for preventing from getting local opitimal solution.
+
+    - ***minus-k-means***: normal - the distance average (k minimum edges) of both end nodes  
+
+        As we improve the solution, we only need to consider the average of the k edges, in decreasing order, since no edges grow between nodes at too great a distance.
+    
+2. How to construct a first solution
+    - nearest-neighbor:
+
+        It chooses the point in a given set that is closest (or most similar) to a given point.
+
+    - [kruskal](https://en.wikipedia.org/wiki/Kruskal%27s_algorithm): 
+
+        A [minimum-spanning-tree](https://en.wikipedia.org/wiki/Minimum_spanning_tree#Algorithms) algorithm which finds an edge of the least possible weight that connects any two trees in the forest.
+
+3. Improvement 
+
+    - 2-opt:
+
+        ```
+        - A   B -             - A - B -
+            ×         ==>
+        - C   D -             - C - D -
+        ```
+
+    - or-1-opt:
+
+        ```
+        - A       C -             - A   -   C -
+            \   /     
+              B           ==>           B
+                                      /   \
+        - D   -   E -             - D       E -
+        ``` 
+
+    - or-2-opt:
+
+        ```
+        - A           D -             - A     -     D -
+            \       /                     
+              B - C           ==>           B - C
+                                          /       \
+        - D     -     E -             - D           E -
+        ``` 
+
+    - iter: iterative processing (or-1-opt + or-2-opt) while being improved
+
+## Usage (Additional)
+You can try all algorithm explained in description at hand.
+Background operarion is recommended.
+```
+sh results.sh > results.txt
+```
+
+## Evaluation
+
+CPU: 2.6 GHz 6-Core Intel Core i7
+
+|                                        | N = 5   | N = 8   | N = 16  | N = 64   | N = 128  | N = 512  | N = 2048 | time[s] (N = 2048) |
+| ----                                   | ----    | ----    | ----    | ----     | ----     | ----     | ----     | ----               |
+| normal + nn                            | 3418.10 | 3832.29 | 5449.44 | 10519.16 | 12684.06 | 25331.84 | 49892.05 | 3.54               |
+| normal + nn + 2-opt                    | 3418.10 | 3832.29 | 4994.89 | 8970.05  | 11489.79 | 21363.60 | 42712.37 | 13.79              |
+| normal + nn + 2-opt + or-1-opt         | 3291.62 | 3778.72 | 4494.42 | 8656.07  | 11225.87 | 20902.75 | 41638.84 | 32.36              |
+| normal + nn + 2-opt + or-2-opt         | 3291.62 | 3832.29 | 4816.14 | 8776.23  | 11349.62 | 21189.02 | 42448.43 | 32.85              |
+| normal + nn + 2-opt + iter             | 3291.62 | 3778.72 | 4494.42 | 8368.18  | 11069.27 | 20627.84 | 41553.94 | 79.87              |
+| normal + kruskal                       | 3518.53 | 3942.55 | 5030.98 | 10459.71 | 12169.94 | 24016.19 | 46470.69 | 13.72              |
+| normal + kruskal + 2-opt + iter        | 3291.62 | 3778.72 | 4494.42 | 8398.20  | 10909.24 | 20912.10 | 41006.20 | 103.38             |
+| minus-mean + nn                        | 3291.62 | 4199.31 | 5188.88 | 9214.46  | 11794.32 | 23538.46 | 47005.96 | 6.24               | 
+| minus-mean + nn + 2-opt + iter         | 3291.62 | 3778.72 | 4494.42 | 8355.93  | 11047.07 | 21149.53 | 41998.41 | 79.13              |
+| minus-mean + kruskal                   | 3520.67 | 3778.72 | 4664.52 | 8578.37  | 11183.61 | 22050.37 | 43029.48 | 17.84              |
+| minus-mean + kruskal + 2-opt + iter    | 3291.62 | 3778.72 | 4494.42 | 8355.93  | 10702.32 | 20789.26 | 40976.88 | 86.86              |
+| minus-10-mean + nn                     | 3291.62 | 4199.31 | 5011.40 | 10101.06 | 13304.56 | 24729.46 | 50002.37 | 6.39               |
+| minus-10-mean + nn + 2-opt + iter      | 3291.62 | 3778.72 | 4494.42 | 8465.40  | 11338.02 | 21162.79 | 41181.11 | 66.64              |
+| minus-10-mean + kruskal                | 3291.62 | 3778.72 | 4977.70 | 8398.26  | 13139.46 | 21892.52 | 44052.85 | 17.30              |
+| ***minus-10-mean + kruskal + 2-opt + iter*** | 3291.62 | 3778.72 | 4494.42 | 8118.40  | 10549.04 | 20418.74 | 40659.50 | 71.82              |
+
+
+## Reference
+1. [巡回セールスマン問題の近似アルゴリズムについて](https://mie-u.repo.nii.ac.jp/?action=repository_action_common_download&item_id=5071&item_no=1&attribute_id=17&file_no=1)
+2. [巡回セールスマン問題[3]](http://www.nct9.ne.jp/m_hiroi/light/pyalgo64.html)
+
+----
+----
 
 This is forked from [https://github.com/hayatoito/google-step-tsp-2016](https://github.com/hayatoito/google-step-tsp-2016).
 
@@ -143,3 +244,5 @@ in the assignment, including, but not limited to:
 6. Acknowledgments
 ----
 この課題は[私](https://github.com/wakanapo)がgoogle step 2016に参加したときにやったものです。問題のわかりやすさ、visualizerによるアルゴリズムのみやすさ、楽しさなどにおいてこれを上回る課題はないと思ったので、Build@Mercariでも採用することにしました。
+
+----

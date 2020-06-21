@@ -2,12 +2,10 @@
 
 import sys
 import math
-
-from common import print_solution, read_input
-from solver_nearest_neighbor import get_all_distance, nearest_neighbor
+import numpy as np
 
 
-def two_opt(solution, dist, N):
+def opt2(solution, dist, N):
     while True:
         count = 0
         for i in range(N - 2):
@@ -24,17 +22,3 @@ def two_opt(solution, dist, N):
             break
 
     return solution
-
-
-def solve(cities):
-    N = len(cities)
-    dist = get_all_distance(cities, N)
-    solution = nearest_neighbor(dist, N)
-    solution = two_opt(solution, dist, N)
-    return solution
-
-
-if __name__ == '__main__':
-    assert len(sys.argv) > 1
-    solution = solve(read_input(sys.argv[1]))
-    print_solution(solution)
