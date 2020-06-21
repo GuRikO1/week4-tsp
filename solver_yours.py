@@ -25,16 +25,16 @@ def solve(cities):
     # How to structure edge costs
     dist = get_euclidean_distance(cities, N)
     
-    dist_for_solution = dist  # normal
+    # dist_for_solution = dist  # normal
 
     # dist_for_solution = get_minus_mean_distance(dist, N)  # minus-mean
 
-    # dist_for_solution = get_minus_k_mean_distance(dist, N, K)  # minus-k-mean
+    dist_for_solution = get_minus_k_mean_distance(dist, N, K)  # minus-k-mean
 
     # How to construct a first solution
-    solution = nearest_neighbor(dist_for_solution, N)  # nearest_neighbor
+    # solution = nearest_neighbor(dist_for_solution, N)  # nearest_neighbor
 
-    # solution = kruskal(dist_for_solution, N)  # kruscal
+    solution = kruskal(dist_for_solution, N)  # kruscal
 
     # improvement
     solution = opt2(solution, dist, N)  # 2-opt
